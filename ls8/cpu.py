@@ -22,18 +22,22 @@ class CPU:
         reg_index = self.ram_read(self.pc + 1)
         reg_value = self.ram_read(self.pc + 2)
         self.reg[reg_index] = reg_value
+        # self.pc += 3
         
     def PRN(self):  # handles the PRN instruction
         reg_index = self.ram_read(self.pc + 1)
         print(self.reg[reg_index])
+        # self.pc += 2
         
     def MUL(self):  # handles the MUL instruction
         reg_a = self.ram_read(self.pc + 1)
         reg_b = self.ram_read(self.pc + 2)
         self.alu('MUL', reg_a, reg_b)
+        # self.pc += 3
         
     def HLT(self):  # handles the HLT instruction
         self.running = False
+        # self.pc += 1
 
     def ram_read(self, index):
         return self.ram[index]
