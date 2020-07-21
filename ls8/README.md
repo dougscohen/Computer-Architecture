@@ -60,6 +60,29 @@ but you'll have to implement those three above instructions first!
 ## Step 0: IMPORTANT: inventory what is here!
 
 * Make a list of files here.
+    - asm
+      - This will produce a `.ls8` file for a given source.
+    - ls8.py
+      - runs the code in cpu.py
+    - cpu.py
+      - contains CPU class with many methods
+    - LS8-spec.md
+      - helpful information about:
+        - Registers
+        - Internal Registers
+        - Flags
+        - Memory
+        - Stack
+        - Interrups
+        - Interrupt numbers
+        - Power on State
+        - Execution Sequence
+        - Instruction Layout
+        - Instruction Set
+        - tons of instructions handled by the ALU
+    - FAQ.md
+      - useful questions I might come across throughout the week
+
 * Write a short 3-10-word description of what each file does.
 * Note what has been implemented, and what hasn't.
 * Read this whole file.
