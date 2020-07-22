@@ -14,7 +14,12 @@ class CPU:
         self.branchtable = {
             0b10000010: self.LDI,
             0b01000111: self.PRN,
+            0b10100000: self.ADD,
+            0b10100001: self.SUB,
             0b10100010: self.MUL,
+            0b10100011: self.DIV,
+            0b10101000: self.AND,
+            0b01100101: self.INC,
             0b00000001: self.HLT
         }
         
@@ -29,11 +34,40 @@ class CPU:
         print(self.reg[reg_index])
         # self.pc += 2
         
+    def ADD(self):  # handles the ADD instruction
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+        self.alu('ADD', reg_a, reg_b)
+        # self.pc += 3
+    
+    def SUB(self):  # handles the SUB instruction
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+        self.alu('SUB', reg_a, reg_b)
+        # self.pc += 3
+        
     def MUL(self):  # handles the MUL instruction
         reg_a = self.ram_read(self.pc + 1)
         reg_b = self.ram_read(self.pc + 2)
         self.alu('MUL', reg_a, reg_b)
         # self.pc += 3
+        
+    def DIV(self):  # handles the DIV instruction
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+        self.alu('DIV', reg_a, reg_b)
+        # self.pc += 3
+        
+    def AND(self):  # handles the AND instruction
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+        self.alu('AND', reg_a, reg_b)
+        # self.pc += 3
+        
+    def INC(self):  # handles the INC instruction
+        reg_a = self.ram_read(self.pc + 1)
+        self.alu("INC", reg_a=reg_a, reg_b=None)
+        # self.pc += 2
         
     def HLT(self):  # handles the HLT instruction
         self.running = False
@@ -77,11 +111,23 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
         
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
             
+        elif op == "DIV":
+            self.reg[reg_a] /= self.reg[reg_b]
+            
+        elif op == "AND":
+            bitwise_AND = (self.reg[reg_a] & self.reg[reg_b])
+            self.reg[reg_a] = bitwise_AND
+            
+        elif op == "INC":
+            self.reg[reg_a] += 1
+        
         else:
             raise Exception("Unsupported ALU operation")
 
