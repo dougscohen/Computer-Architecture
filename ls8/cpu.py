@@ -20,8 +20,12 @@ class CPU:
             0b10100011: self.DIV,
             0b10101000: self.AND,
             0b01100101: self.INC,
+            0b01000101: self.PUSH,
+            0b01000110: self.POP,
             0b00000001: self.HLT
         }
+        self.sp = 7
+        self.reg[self.sp] = 0xF4
         
     def LDI(self):  # handles the LDI instruction
         reg_index = self.ram_read(self.pc + 1)
@@ -67,6 +71,30 @@ class CPU:
     def INC(self):  # handles the INC instruction
         reg_a = self.ram_read(self.pc + 1)
         self.alu("INC", reg_a=reg_a, reg_b=None)
+        # self.pc += 2
+        
+    def PUSH(self):  # handles the PUSH instuction
+        # decrement stack pointer
+        self.reg[self.sp] -= 1
+        # get register value
+        reg_index = self.ram_read(self.pc + 1)
+        value = self.reg[reg_index]
+        # Store in memory
+        address_to_push_to = self.reg[self.sp]
+        self.ram[address_to_push_to] = value
+        # self.pc += 2
+        
+    def POP(self):
+        address_to_pop_from = self.reg[self.sp]
+        value = self.ram[address_to_pop_from]
+        
+        # store in the given register
+        reg_index = self.ram_read(self.pc + 1)
+        self.reg[reg_index] = value
+        
+        # increment SP
+        self.reg[self.sp] += 1
+        
         # self.pc += 2
         
     def HLT(self):  # handles the HLT instruction
