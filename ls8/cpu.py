@@ -24,10 +24,19 @@ class CPU:
             0b01000110: self.POP,
             0b01010000: self.CALL,
             0b00010001: self.RET,
+            0b10100111: self.CMP,
+            0b01010100: self.JMP,
+            0b01010101: self.JEQ,
+            0b01010110: self.JNE,
             0b00000001: self.HLT
         }
         self.sp = 7
         self.reg[self.sp] = 0xF4
+        
+        self.EQ = 7
+        self.GT = 6
+        self.LT = 5
+        self.flags = [0] * 8
         
     def LDI(self):  # handles the LDI instruction
         reg_index = self.ram_read(self.pc + 1)
@@ -118,7 +127,32 @@ class CPU:
         self.reg[self.sp] += 1
         # set pc to return address
         self.pc = return_address
+    
+    def CMP(self):
+        reg_a = self.ram_read(self.pc + 1)
+        reg_b = self.ram_read(self.pc + 2)
+        self.alu('CMP', reg_a, reg_b)
         
+    def JMP(self):
+        reg_index = self.ram_read(self.pc + 1)
+        address_to_jump_to = self.reg[reg_index]
+        self.pc = address_to_jump_to
+        
+    def JEQ(self):
+        reg_index = self.ram_read(self.pc + 1)
+        address_to_jump_to = self.reg[reg_index]
+        if self.flags[self.EQ] == 1:
+            self.pc = address_to_jump_to
+        else:
+            self.pc += 2
+            
+    def JNE(self):
+        reg_index = self.ram_read(self.pc + 1)
+        address_to_jump_to = self.reg[reg_index]
+        if self.flags[self.EQ] == 0:
+            self.pc = address_to_jump_to
+        else:
+            self.pc += 2
         
     def HLT(self):  # handles the HLT instruction
         self.running = False
@@ -178,7 +212,15 @@ class CPU:
             
         elif op == "INC":
             self.reg[reg_a] += 1
-        
+            
+        elif op == "CMP":
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.flags[self.EQ] = 1
+            if self.reg[reg_a] > self.reg[reg_b]:
+                self.flags[self.GT] = 1
+            if self.reg[reg_a] < self.reg[reg_b]:
+                self.flags[self.LT] = 1
+
         else:
             raise Exception("Unsupported ALU operation")
 
